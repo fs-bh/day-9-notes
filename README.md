@@ -29,16 +29,22 @@ end
 # models/user.rb
 
 class User < ActiveRecord::Base
-	
-	def watch_list_items
-		WatchListItem.where(user_id: self.id)
-	end
 
-	def watch_list_movies
-		watch_list_items.map do |wli|
-			Movie.find(wli.movie_id)
-		end
-	end
+	has_many :watch_list_items
+
+	# ^^ macro replaces at least this:
+	# def watch_list_items
+	# 	WatchListItem.where(user_id: self.id)
+	# end
+
+	has_many :movies, through: :watch_list_items
+
+	# ^^ macro replaces this:
+	# def watch_list_movies
+	# 	watch_list_items.map do |wli|
+	# 		Movie.find(wli.movie_id)
+	# 	end
+	# end
 
 end
 ```
@@ -52,6 +58,7 @@ class WatchListItem < ActiveRecord::Base
 	belongs_to :user
 
 	# those macros above replace the methods below
+	# it also creates "setter" methods
 	# and it probably creates more methods!?
 
 	# def movie
