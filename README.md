@@ -26,6 +26,41 @@ end
 ```
 
 ```ruby
-class Movie < 
+# models/user.rb
+
+class User < ActiveRecord::Base
+	
+	def watch_list_items
+		WatchListItem.where(user_id: self.id)
+	end
+
+	def watch_list_movies
+		watch_list_items.map do |wli|
+			Movie.find(wli.movie_id)
+		end
+	end
+
+end
+```
+
+```ruby
+# models/watch_list_item.rb
+
+class WatchListItem < ActiveRecord::Base
+
+	belongs_to :movie
+	belongs_to :user
+
+	# those macros above replace the methods below
+	# and it probably creates more methods!?
+
+	# def movie
+	# 	Movie.find_by(id: self.movie_id)
+	# end
+
+	# def user
+	# 	User.find_by(id: self.user_id)
+	# end
+
 end
 ```
